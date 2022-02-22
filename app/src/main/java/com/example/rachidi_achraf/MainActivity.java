@@ -1,6 +1,8 @@
 package com.example.rachidi_achraf;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 
@@ -14,7 +16,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
-    List<Team> Teams = new ArrayList<>();
+    List<Driver> drivers = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,12 +30,18 @@ public class MainActivity extends AppCompatActivity {
         service.listDrivers().enqueue(new Callback<List<Driver>>() {
             @Override
             public void onResponse(Call<List<Driver>> call, Response<List<Driver>> response) {
-                System.out.println(response.body().size());
+                RecyclerView rvDriver = (RecyclerView) findViewById(R.id.rvDrivers);
+                drivers = response.body();
+
+                DriverAdapter adapter = new DriverAdapter(drivers);
+                rvDriver.setAdapter(adapter);
+
+                rvDriver.setLayoutManager(new LinearLayoutManager(MainActivity.this));
             }
 
             @Override
             public void onFailure(Call<List<Driver>> call, Throwable t) {
-                
+
             }
         });
     }
